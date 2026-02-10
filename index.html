@@ -140,6 +140,174 @@
         <div class="stream-selector">
             <select id="streamSelect" onchange="changeStream()">
                 <option value="https://stream.zeno.fm/asxt2oxhyabvv">Estação Principal</option>
+                <option value="https://stream.zeno.fm/asxt2oxhyabvv">Estação Alternativa</option>
+                <option value="https://stream.zeno.fm/asxt2oxhyabvv">Estação Flashback</option>
+            </select>
+        </div>
+        
+        <button id="playBtn" onclick="togglePlay()">
+            <span id="icon">▶️</span>
+        </button>
+
+        <audio id="radioPlayer" src="https://stream.zeno.fm/asxt2oxhyabvv"></audio>
+
+        <div class="news-window">
+            <div class="news-ticker" id="newsTicker"></div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('radioPlayer');
+        const icon = document.getElementById('icon');
+        const status = document.getElementById('status');
+        const streamSelect = document.getElementById('streamSelect');
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play().catch(e => console.log("Erro ao tocar: ", e));
+                icon.innerText = "⏸️";
+                status.innerText = "Tocando: " + streamSelect.options[streamSelect.selectedIndex].text;
+            } else {
+                audio.pause();
+                icon.innerText = "▶️";
+                status.innerText = "Rádio Pausada";
+            }
+        }
+
+        // FUNÇÃO PARA TROCAR A FONTE
+        function changeStream() {
+            const wasPlaying = !audio.paused;
+            audio.src = streamSelect.value;
+            
+            if (wasPlaying) {
+                audio.play();
+                status.innerText = "Tocando: " + streamSelect.options[streamSelect.selectedIndex].text;
+            } else {
+                status.innerText = "Estação alterada";
+            }
+        }
+
+        function loadNews() {
+            const news = [
+                "🔥 GilSena Web Radio: A rádio que toca você!",
+                "📈 Tecnologia: Seu site agora é 100% responsivo.",
+                "⚽ Esporte: Acompanhe os principais gols da rodada.",
+                "🌍 Mundo: Informação com credibilidade a toda hora.",
+                "🎵 Música: Peça seu sucesso em nossas redes sociais!"
+            ];
+            const ticker = document.getElementById('newsTicker');
+            ticker.innerHTML = news.map(n => `<div class="news-item">${n}</div>`).join('');
+        }
+        
+        loadNews();
+    </script>
+</body>
+</html>        .container {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container-imagem img {
+            width: 180px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        /* --- SELETOR DE ESTAÇÃO --- */
+        .stream-selector {
+            margin: 15px 0;
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--primary-color);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select option {
+            background: #333;
+            color: white;
+        }
+
+        #playBtn {
+            background: var(--primary-color);
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 26px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+        }
+
+        #playBtn:hover { transform: scale(1.1); }
+
+        /* --- NOTÍCIAS --- */
+        .news-window {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .news-ticker {
+            position: absolute;
+            width: 100%;
+            animation: scrollUp 15s linear infinite;
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+
+        .news-item {
+            padding: 10px;
+            font-size: 0.85rem;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="container-imagem">
+            <img src="LOGO RADIO.png" alt="GilSena Logo">
+        </div>
+
+        <div class="logo">GilSena <br><span style="color:#fff">Web Radio</span></div>
+        
+        <div id="status">Escolha uma estação</div>
+
+        <div class="stream-selector">
+            <select id="streamSelect" onchange="changeStream()">
+                <option value="https://stream.zeno.fm/asxt2oxhyabvv">Estação Principal</option>
                 <option value="URL_DA_OUTRA_RADIO_AQUI">Estação Alternativa</option>
                 <option value="URL_DE_OUTRA_RADIO_AQUI">Estação Flashback</option>
             </select>
@@ -203,6 +371,7 @@
     </script>
 </body>
 </html>
+
 
 
 
