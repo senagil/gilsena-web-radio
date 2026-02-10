@@ -25,7 +25,7 @@
             align-items: center;
             justify-content: center;
             color: white;
-            overflow: hidden; /* Trava a rolagem da página principal */
+            overflow: hidden;
         }
 
         @keyframes gradient {
@@ -46,25 +46,39 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .container-imagem {
-            width: 200%;
-            max-width: 220px;
-            margin: 50 auto 15px;
-        }
-
         .container-imagem img {
-            width: 220px;
+            width: 180px;
             height: auto;
-            object-fit: contain;
+            margin-bottom: 10px;
         }
 
         .logo {
-            font-size: clamp(1.8rem, 7vw, 2.5rem);
+            font-size: clamp(1.5rem, 6vw, 2rem);
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 10px;
             color: var(--primary-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* --- SELETOR DE ESTAÇÃO --- */
+        .stream-selector {
+            margin: 15px 0;
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--primary-color);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select option {
+            background: #333;
+            color: white;
         }
 
         #playBtn {
@@ -82,26 +96,22 @@
             margin: 15px auto;
         }
 
-        /* --- SISTEMA DE NOTÍCIAS AUTOMÁTICO --- */
+        #playBtn:hover { transform: scale(1.1); }
+
+        /* --- NOTÍCIAS --- */
         .news-window {
             margin-top: 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            height: 80px; /* Altura visível de 2 linhas aproximadamente */
-            overflow: hidden; /* Esconde a barra de rolagem */
+            height: 60px;
+            overflow: hidden;
             position: relative;
         }
 
         .news-ticker {
             position: absolute;
             width: 100%;
-            top: 0;
-            animation: scrollUp 15s linear infinite; /* Animação infinita */
-        }
-
-        /* Pausa a notícia quando o usuário passa o mouse ou toca */
-        .news-window:hover .news-ticker {
-            animation-play-state: paused;
+            animation: scrollUp 15s linear infinite;
         }
 
         @keyframes scrollUp {
@@ -110,13 +120,9 @@
         }
 
         .news-item {
-            padding: 10px 15px;
-            font-size: 0.9rem;
-            color: #eee;
+            padding: 10px;
+            font-size: 0.85rem;
             min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
     </style>
 </head>
@@ -129,7 +135,15 @@
 
         <div class="logo">GilSena <br><span style="color:#fff">Web Radio</span></div>
         
-        <div id="status">Pronto para tocar</div>
+        <div id="status">Escolha uma estação</div>
+
+        <div class="stream-selector">
+            <select id="streamSelect" onchange="changeStream()">
+                <option value="https://stream.zeno.fm/asxt2oxhyabvv">Estação Principal</option>
+                <option value="URL_DA_OUTRA_RADIO_AQUI">Estação Alternativa</option>
+                <option value="URL_DE_OUTRA_RADIO_AQUI">Estação Flashback</option>
+            </select>
+        </div>
         
         <button id="playBtn" onclick="togglePlay()">
             <span id="icon">▶️</span>
@@ -138,8 +152,7 @@
         <audio id="radioPlayer" src="https://stream.zeno.fm/asxt2oxhyabvv"></audio>
 
         <div class="news-window">
-            <div class="news-ticker" id="newsTicker">
-                </div>
+            <div class="news-ticker" id="newsTicker"></div>
         </div>
     </div>
 
@@ -147,16 +160,30 @@
         const audio = document.getElementById('radioPlayer');
         const icon = document.getElementById('icon');
         const status = document.getElementById('status');
+        const streamSelect = document.getElementById('streamSelect');
 
         function togglePlay() {
             if (audio.paused) {
-                audio.play();
+                audio.play().catch(e => console.log("Erro ao tocar: ", e));
                 icon.innerText = "⏸️";
-                status.innerText = "Tocando ao vivo...";
+                status.innerText = "Tocando: " + streamSelect.options[streamSelect.selectedIndex].text;
             } else {
                 audio.pause();
                 icon.innerText = "▶️";
                 status.innerText = "Rádio Pausada";
+            }
+        }
+
+        // FUNÇÃO PARA TROCAR A FONTE
+        function changeStream() {
+            const wasPlaying = !audio.paused;
+            audio.src = streamSelect.value;
+            
+            if (wasPlaying) {
+                audio.play();
+                status.innerText = "Tocando: " + streamSelect.options[streamSelect.selectedIndex].text;
+            } else {
+                status.innerText = "Estação alterada";
             }
         }
 
@@ -168,32 +195,13 @@
                 "🌍 Mundo: Informação com credibilidade a toda hora.",
                 "🎵 Música: Peça seu sucesso em nossas redes sociais!"
             ];
-            
             const ticker = document.getElementById('newsTicker');
-            // Repetimos a lista para criar um efeito visual de loop mais longo
             ticker.innerHTML = news.map(n => `<div class="news-item">${n}</div>`).join('');
         }
         
         loadNews();
-
-
-
-
-
-        
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('App pronto para ser instalado!'))
-        .catch(err => console.log('Erro no registro:', err));
-    });
-  }
-
     </script>
-
-    
 </body>
-
 </html>
 
 
