@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GilSena Web Radio</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary-color: #ffcc00;
+            --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden; /* Trava a rolagem da página principal */
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container-imagem {
+            width: 100%;
+            max-width: 190px;
+            margin: 50 auto 15px;
+        }
+
+        .container-imagem img {
+            width: 190%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .logo {
+            font-size: clamp(1.8rem, 7vw, 2.5rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #playBtn {
+            background: var(--primary-color);
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 26px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+        }
+
+        /* --- SISTEMA DE NOTÍCIAS AUTOMÁTICO --- */
+        .news-window {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 80px; /* Altura visível de 2 linhas aproximadamente */
+            overflow: hidden; /* Esconde a barra de rolagem */
+            position: relative;
+        }
+
+        .news-ticker {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            animation: scrollUp 15s linear infinite; /* Animação infinita */
+        }
+
+        /* Pausa a notícia quando o usuário passa o mouse ou toca */
+        .news-window:hover .news-ticker {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+
+        .news-item {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            color: #eee;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="container-imagem">
+            <img src="LOGO RADIO.png" alt="GilSena Logo">
+        </div>
+
+        <div class="logo">GilSena <br><span style="color:#fff">Web Radio</span></div>
+        
+        <div id="status">Pronto para tocar</div>
+        
+        <button id="playBtn" onclick="togglePlay()">
+            <span id="icon">▶️</span>
+        </button>
+
+        <audio id="radioPlayer" src="https://stream.zeno.fm/asxt2oxhyabvv"></audio>
+
+        <div class="news-window">
+            <div class="news-ticker" id="newsTicker">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('radioPlayer');
+        const icon = document.getElementById('icon');
+        const status = document.getElementById('status');
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                icon.innerText = "⏸️";
+                status.innerText = "Tocando ao vivo...";
+            } else {
+                audio.pause();
+                icon.innerText = "▶️";
+                status.innerText = "Rádio Pausada";
+            }
+        }
+
+        function loadNews() {
+            const news = [
+                "🔥 GilSena Web Radio: A rádio que toca você!",
+                "📈 Tecnologia: Seu site agora é 100% responsivo.",
+                "⚽ Esporte: Acompanhe os principais gols da rodada.",
+                "🌍 Mundo: Informação com credibilidade a toda hora.",
+                "🎵 Música: Peça seu sucesso em nossas redes sociais!"
+            ];
+            
+            const ticker = document.getElementById('newsTicker');
+            // Repetimos a lista para criar um efeito visual de loop mais longo
+            ticker.innerHTML = news.map(n => `<div class="news-item">${n}</div>`).join('');
+        }
+        
+        loadNews();
+    </script>
+</body>
+</html>
