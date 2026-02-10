@@ -175,10 +175,27 @@
         }
         
         loadNews();
+
+
+
+
+
+        
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('App pronto para ser instalado!'))
+        .catch(err => console.log('Erro no registro:', err));
+    });
+  }
+
     </script>
+
+    
 </body>
 
 </html>
+
 
 
 
